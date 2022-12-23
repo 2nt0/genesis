@@ -2,24 +2,27 @@ import socket
 import struct
 
 # Create a raw socket
-sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
+raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
 
-# Bind the socket to the wireless interface
-sock.bind(("wlan0", 0))
+# Bind the socket to the WiFi interface
+raw_socket.bind(("wlan0", 0))
 
 # Set the socket to promiscuous mode
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
+raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
 
-# Start sniffing packets
+# Loop indefinitely and capture packets
 while True:
     # Receive a packet
-    packet, addr = sock.recvfrom(65565)
+    packet = raw_socket.recvfrom(65565)
 
-    # Parse the packet
-    eth_header = packet[:14]
-    eth_header = struct.unpack("!6s6s2s", eth_header)
-    eth_protocol = socket.ntohs(eth_header[2])
+    # Unpack the packet header
+    ethernet_header = packet[0][0:14]
+    ethernet_header = struct.unpack("!6s6s2s", ethernet_header)
 
-    # Print the packet
-    print("Packet:", packet)
-    print("Protocol:", eth_protocol)
+    # Extract the source and destination MAC addresses
+    source_mac = ethernet_header[0]
+    dest_mac = ethernet_header[1]
+
+    # Print the packet information
+    print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
+    print(packet)
