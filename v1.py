@@ -10,9 +10,6 @@ raw_socket.bind(("wlan0", 0))
 # Set the socket to promiscuous mode
 raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
 
-# Enable promiscuous mode
-raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
-
 # Loop indefinitely and capture packets
 while True:
     # Receive a packet
@@ -30,6 +27,3 @@ while True:
 
     # Print the packet information
     print("Source MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
-
-# Disable promiscuous mode
-raw_socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_OFF)
