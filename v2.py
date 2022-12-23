@@ -24,22 +24,22 @@ while True:
     ethernet_header = struct.unpack("!6s6s2s", ethernet_header)
     
     #extract, format and print source and header macs
-    source_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[0])))).upper()
-    dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper() 
-    print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
+    source_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper()
+    dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[0])))).upper() 
+    print("\nSource MAC:     {}\nDestination MAC:{}".format(source_mac, dest_mac))
     
-    print("eth_proto", ethernet_header[2])
+    #print("eth_proto", ethernet_header[2])
     if ethernet_header[2] == b'\x08\x00':
         #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
-        print("ip_proto", ip_protocol)
+        #print("ip_proto", ip_protocol)
         print("IP header data:  ", ip_header)
         
         #extract, format and print src and dst ip addresses
         ip_src = '.'.join(map(str, ip_header[8]))
         ip_dst = '.'.join(map(str, ip_header[9]))
-        print("\nSource IP: {}\tDestination IP: {}".format(ip_src, ip_dst))
+        print("Source IP:      {}\nDestination IP: {}".format(ip_src, ip_dst))
         
         if ip_protocol == 6:
             # TCP packet
