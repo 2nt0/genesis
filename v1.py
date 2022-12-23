@@ -25,3 +25,4 @@ while True:
 
     # Print the packet information
     print("Source MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
+    print(packet)
