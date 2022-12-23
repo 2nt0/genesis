@@ -22,8 +22,6 @@ while True:
     # Extract the source and destination MAC addresses
     source_mac = ethernet_header[0]
     dest_mac = ethernet_header[1]
-    source_mac = ":".join(["{:02x}".format(ord(str(ch))) for ch in source_mac])
-    dest_mac = ":".join(["{:02x}".format(ord(str(ch))) for ch in dest_mac])
 
     # Print the packet information
     print("Source MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
