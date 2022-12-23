@@ -18,7 +18,7 @@ while True:
     # Unpack the packet header
     ethernet_header = packet[0][0:14]
     ethernet_header = struct.unpack("!6s6s2s", ethernet_header)
-    eth_protocol = socket.ntohs(ethernet_header[2])
+    eth_protocol = socket.ntohs(int(ethernet_header[2]))
     
     # Extract the source and destination MAC addresses
     source_mac = ethernet_header[0]
