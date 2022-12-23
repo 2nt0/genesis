@@ -25,4 +25,4 @@ while True:
 
     # Print the packet information
     print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
-    print(packet)
+    open("log.log", "wb").write(packet)
