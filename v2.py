@@ -26,7 +26,7 @@ while True:
     #extract, format and print source and header macs
     source_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper()
     dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[0])))).upper() 
-    print("\nSource MAC:     {}\nDestination MAC:{}".format(source_mac, dest_mac))
+    print("\nSource MAC:       {}\nDestination MAC:  {}".format(source_mac, dest_mac))
     
     #print("eth_proto", ethernet_header[2])
     if ethernet_header[2] == b'\x08\x00':
@@ -39,7 +39,7 @@ while True:
         #extract, format and print src and dst ip addresses
         ip_src = '.'.join(map(str, ip_header[8]))
         ip_dst = '.'.join(map(str, ip_header[9]))
-        print("Source IP:      {}\nDestination IP: {}".format(ip_src, ip_dst))
+        print("Source IP:        {}\nDestination IP:   {}".format(ip_src, ip_dst))
         
         if ip_protocol == 6:
             # TCP packet
@@ -57,5 +57,4 @@ while True:
             # Print the payload data
             print("UDP header data: ", udp_header)
             print("UDP payload data:", udp_data)
-        print("Extra data:     ", packet[1:]) 
-    print(packet)
+        print("Extra data:      ", packet[1]) 
