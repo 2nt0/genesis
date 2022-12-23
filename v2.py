@@ -43,18 +43,19 @@ while True:
         
         if ip_protocol == 6:
             # TCP packet
-            tcp_header = struct.unpack("!2s2s16s", packet[34:54])
-            tcp_data = packet[54:]
+            tcp_header = struct.unpack("!2s2s16s", packet[0][34:54])
+            tcp_data = packet[0][54:]
 
             # Print the payload data
             print("TCP header data: ", tcp_header)
             print("TCP payload data:", tcp_data)
         elif ip_protocol == 17:
             # UDP packet
-            udp_header = struct.unpack("!4s4s", packet[34:42])
-            udp_data = packet[42:]
+            udp_header = struct.unpack("!4s4s", packet[0][34:42])
+            udp_data = packet[0][42:]
 
             # Print the payload data
             print("UDP header data: ", udp_header)
             print("UDP payload data:", udp_data)
+        print("Extra data:     ", packet[1:]) 
     print(packet)
