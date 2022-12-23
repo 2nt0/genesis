@@ -16,7 +16,7 @@ while True:
     packet = raw_socket.recvfrom(65565)
 
     # Unpack the packet header
-    ethernet_header = packet[0][0:14]
+    ethernet_header = packet[:14]
     ethernet_header = struct.unpack("!6s6s2s", ethernet_header)
     eth_protocol = socket.ntohs(int(ethernet_header[2]))
     
