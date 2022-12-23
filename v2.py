@@ -26,4 +26,5 @@ while True:
     # Print the packet information
     print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
     for i in packet:
-        open("log.log", "wb").write(i)
+        print(i)
+        #open("log.log", "wb").write(i)
