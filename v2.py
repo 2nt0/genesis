@@ -28,10 +28,12 @@ while True:
     dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper() 
     print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
     
+    print("eth_proto", sum(list(map(int, ethernet_header[2]))))
     if sum(list(map(int, ethernet_header[2]))) == 2048:
         #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
+        print("ip_proto", ip_protocol)
         print("IP header data:  ", ip_header)
         
         #extract, format and print src and dst ip addresses
