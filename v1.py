@@ -11,7 +11,7 @@ raw_socket.bind(("wlan0", 0))
 raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
 
 # Enable promiscuous mode
-raw_socket.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
 
 # Loop indefinitely and capture packets
 while True:
