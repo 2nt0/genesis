@@ -28,8 +28,8 @@ while True:
     dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper() 
     print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
     
-    print("eth_proto", sum(list(map(int, ethernet_header[2]))))
-    if sum(list(map(int, ethernet_header[2]))) == 2048:
+    print("eth_proto", ethernet_header[2])
+    if ethernet_header[2] == b'\x08\x00":
         #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
@@ -57,3 +57,4 @@ while True:
             # Print the payload data
             print("UDP header data: ", udp_header)
             print("UDP payload data:", udp_data)
+    print(packet)
