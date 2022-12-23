@@ -26,7 +26,8 @@ while True:
     #extract, format and print source and header macs
     source_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper()
     dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[0])))).upper() 
-    print("\nSource MAC:       {}\nDestination MAC:  {}".format(source_mac, dest_mac))
+    print("\nSrc MAC:\t{}\nDst MAC:\t{}".format(source_mac, dest_mac))
+    print("Length:\t", ethernet_header[2])
     
     #print("eth_proto", ethernet_header[2])
     if ethernet_header[2] == b'\x08\x00':
@@ -34,27 +35,40 @@ while True:
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
         #print("ip_proto", ip_protocol)
-        print("IP header data:  ", ip_header)
+        print("IP Header:\t", ip_header)
         
         #extract, format and print src and dst ip addresses
         ip_src = '.'.join(map(str, ip_header[8]))
         ip_dst = '.'.join(map(str, ip_header[9]))
-        print("Source IP:        {}\nDestination IP:   {}".format(ip_src, ip_dst))
+        print("Src IP:\t{}\nDst IP:\t{}".format(ip_src, ip_dst))
         
         if ip_protocol == 6:
             # TCP packet
-            tcp_header = struct.unpack("!2s2s16s", packet[0][34:54])
+            print("TCP PACKET")
+            tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
+            print("Src Port:\t", tcp_header[0])
+            print("Dst Port:\t", tcp_header[1])
+            print("Seq Num:\t", tcp_header[2])
+            print("ACK Num:\t", tcp_header[3])
+            print("DOs Rsv NS:\t", tcp_header[4])
+            print("Oth. Flags:\t", tcp_header[5])
+            print("Win Size:\t", tcp_header[6])
+            print("TCP Hash:\t", tcp_header[7])
+            print("URG pnt:\t", tcp_header[8])
             tcp_data = packet[0][54:]
 
             # Print the payload data
-            print("TCP header data: ", tcp_header)
-            print("TCP payload data:", tcp_data)
+            print("TCP Payload:", tcp_data)
         elif ip_protocol == 17:
             # UDP packet
-            udp_header = struct.unpack("!4s4s", packet[0][34:42])
+            print("UDP PACKET")
+            udp_header = struct.unpack("!HHHH", packet[0][34:42])
+            print("Src Port:\t", udp_header[0])
+            print("Dst Port:\t", udp_header[1])
+            print("UDP Length:\t", udp_header[2])
+            print("UDP Hash:\t", udp_header[3])
             udp_data = packet[0][42:]
 
             # Print the payload data
-            print("UDP header data: ", udp_header)
-            print("UDP payload data:", udp_data)
-        print("Extra data:      ", packet[1]) 
+            print("UDP Payload:\t", udp_data)
+        print("Extra Data:\t", packet[1]) 
