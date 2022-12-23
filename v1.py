@@ -24,5 +24,5 @@ while True:
     dest_mac = ethernet_header[1]
 
     # Print the packet information
-    print("Source MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
+    print("\nSource MAC: {}\tDestination MAC: {}".format(source_mac, dest_mac))
     print(packet)
