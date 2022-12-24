@@ -5,7 +5,7 @@ debug = int(input("Debug Mode? (0/1)"))
 logging = int(input("Log Output? (0/1)"))
 if logging:
     log_blank = int(input("Log Blank Payloads? (0/1)"))
-    print_verbose = int(input("Print all details? (0/1)")
+    print_verbose = int(input("Print all details? (0/1)"))
 else:
     log_blank = 0
     print_verbose = 1
