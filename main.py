@@ -67,16 +67,16 @@ while True: # Loop indefinitely and capture packets
             tcp_data = packet[0][54:]
             
             def tcp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "w").write("\nSrc Port:\t" + str(tcp_header[0]))
-                open("genesis.log", "w").write("\nDst Port:\t" + str(tcp_header[1]))
-                open("genesis.log", "w").write("\nSeq Num:\t" + str(tcp_header[2]))
-                open("genesis.log", "w").write("\nACK Num:\t" + str(tcp_header[3]))
-                open("genesis.log", "w").write("\nDOs Rsv NS:\t" + str(tcp_header[4]))
-                open("genesis.log", "w").write("\nOth. Flags:\t" + str(tcp_header[5]))
-                open("genesis.log", "w").write("\nWin Size:\t" + str(tcp_header[6]))
-                open("genesis.log", "w").write("\nTCP Hash:\t" + str(tcp_header[7]))
-                open("genesis.log", "w").write("\nURG pnt:\t" + str(tcp_header[8]))
-                open("genesis.log", "w").write("\nTCP Payload:\t" + str(tcp_data))
+                open("genesis.log",  "a").write("\nSrc Port:\t" + str(tcp_header[0]))
+                open("genesis.log",  "a").write("\nDst Port:\t" + str(tcp_header[1]))
+                open("genesis.log",  "a").write("\nSeq Num:\t" + str(tcp_header[2]))
+                open("genesis.log",  "a").write("\nACK Num:\t" + str(tcp_header[3]))
+                open("genesis.log",  "a").write("\nDOs Rsv NS:\t" + str(tcp_header[4]))
+                open("genesis.log",  "a").write("\nOth. Flags:\t" + str(tcp_header[5]))
+                open("genesis.log",  "a").write("\nWin Size:\t" + str(tcp_header[6]))
+                open("genesis.log",  "a").write("\nTCP Hash:\t" + str(tcp_header[7]))
+                open("genesis.log",  "a").write("\nURG pnt:\t" + str(tcp_header[8]))
+                open("genesis.log",  "a").write("\nTCP Payload:\t" + str(tcp_data))
             
             if logging:
                 if log_blank:
@@ -102,11 +102,11 @@ while True: # Loop indefinitely and capture packets
             udp_data = packet[0][42:]
             
             def udp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "w").write("\nSrc Port:\t" + str(udp_header[0]))
-                open("genesis.log", "w").write("\nDst Port:\t" + str(udp_header[1]))
-                open("genesis.log", "w").write("\nUDP Length:\t" + str(udp_header[2]))
-                open("genesis.log", "w").write("\nUDP Hash:\t" + str(udp_header[3]))
-                open("genesis.log", "w").write("\nUDP Payload:\t" + str(udp_data))
+                open("genesis.log",  "a").write("\nSrc Port:\t" + str(udp_header[0]))
+                open("genesis.log",  "a").write("\nDst Port:\t" + str(udp_header[1]))
+                open("genesis.log",  "a").write("\nUDP Length:\t" + str(udp_header[2]))
+                open("genesis.log",  "a").write("\nUDP Hash:\t" + str(udp_header[3]))
+                open("genesis.log",  "a").write("\nUDP Payload:\t" + str(udp_data))
             
             if logging:
                 if log_blank:
@@ -123,15 +123,15 @@ while True: # Loop indefinitely and capture packets
         
         if logging:
             if log_blank:
-                    open("genesis.log", "w").write("\nExtra Data:\t" + str(packet[1]))
+                    open("genesis.log",  "a").write("\nExtra Data:\t" + str(packet[1]))
             elif udp_data != b'' or tcp_data != b'':
-                    open("genesis.log", "w").write("\nExtra Data:\t" + str(packet[1]))
+                    open("genesis.log",  "a").write("\nExtra Data:\t" + str(packet[1]))
         
         if print_verbose:
             print("Extra Data:\t", packet[1])
         
         if logging:
-            open("genesis.log", "w").write("\n") #write blank line to log file between packets
+            open("genesis.log",  "a").write("\n") #write blank line to log file between packets
         
         if debug:
             print(packet)
