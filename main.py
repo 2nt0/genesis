@@ -67,7 +67,7 @@ while True: # Loop indefinitely and capture packets
             tcp_data = packet[0][54:]
             
             def tcp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "w").write("\nSrc Port:\t" + str(tcp_header[0])))
+                open("genesis.log", "w").write("\nSrc Port:\t" + str(tcp_header[0]))
                 open("genesis.log", "w").write("\nDst Port:\t" + str(tcp_header[1]))
                 open("genesis.log", "w").write("\nSeq Num:\t" + str(tcp_header[2]))
                 open("genesis.log", "w").write("\nACK Num:\t" + str(tcp_header[3]))
