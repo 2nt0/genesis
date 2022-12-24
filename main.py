@@ -102,11 +102,11 @@ while True: # Loop indefinitely and capture packets
             udp_data = packet[0][42:]
             
             def udp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "wb").write("\nSrc Port:\t" + str(udp_header[0]))
-                open("genesis.log", "wb").write("\nDst Port:\t" + str(udp_header[1]))
-                open("genesis.log", "wb").write("\nUDP Length:\t" + str(udp_header[2]))
-                open("genesis.log", "wb").write("\nUDP Hash:\t" + str(udp_header[3]))
-                open("genesis.log", "wb").write("\nUDP Payload:\t" + str(udp_data))
+                open("genesis.log", "w").write("\nSrc Port:\t" + str(udp_header[0]))
+                open("genesis.log", "w").write("\nDst Port:\t" + str(udp_header[1]))
+                open("genesis.log", "w").write("\nUDP Length:\t" + str(udp_header[2]))
+                open("genesis.log", "w").write("\nUDP Hash:\t" + str(udp_header[3]))
+                open("genesis.log", "w").write("\nUDP Payload:\t" + str(udp_data))
             
             if logging:
                 if log_blank:
