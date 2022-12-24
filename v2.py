@@ -8,7 +8,7 @@ def rftc(string):
     return string[2:]
 
 def pad_mac(mystr):
-    return mystr.rjust(2, "0"))
+    return mystr.rjust(2, "0")
 
 # Create a raw socket
 raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
