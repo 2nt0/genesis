@@ -67,6 +67,15 @@ while True: # Loop indefinitely and capture packets
             tcp_data = packet[0][54:]
             
             def tcp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
+                if debug:
+                    open("genesis.log",  "a").write("\nip_proto" + str(ip_protocol))
+                open("genesis.log",  "a").write("\nIP Header:\t" + str(ip_header))
+                open("genesis.log",  "a").write("\nSrc IP:\t\t" + str(src_ip))
+                open("genesis.log",  "a").write("\nDst IP:\t\t" + str(dst_ip))
+                open("genesis.log",  "a").write("\nTCP PACKET")
+                open("genesis.log",  "a").write("\nSrc MAC:\t" + str(src_mac))
+                open("genesis.log",  "a").write("\nDst MAC:\t" + str(dst_mac))
+                open("genesis.log",  "a").write("\nEth Len:\t" + str(eth_header[2]))
                 open("genesis.log",  "a").write("\nSrc Port:\t" + str(tcp_header[0]))
                 open("genesis.log",  "a").write("\nDst Port:\t" + str(tcp_header[1]))
                 open("genesis.log",  "a").write("\nSeq Num:\t" + str(tcp_header[2]))
@@ -137,3 +146,5 @@ while True: # Loop indefinitely and capture packets
             print(packet)
         
         print("") #line break between packets
+        
+        #TODO more efficient logging function, make sure all prints are logged (maybe rearrange all prints)
