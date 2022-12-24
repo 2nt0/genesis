@@ -1,43 +1,35 @@
 import socket
 import struct
 
-debug = int(input("Debug Mode? (0/1)"))
-logging = int(input("Log Output? (0/1)"))
+debug = int(input("Debug mode? (0/1)"))
+logging = int(input("Log output? (0/1)"))
+
 if logging:
-    log_blank = int(input("Log Blank Payloads? (0/1)"))
+    log_blank = int(input("Log blank payloads? (0/1)"))
     print_verbose = int(input("Print all details? (0/1)"))
 else:
     log_blank = 0
     print_verbose = 1
     if debug:
-        print("Assuming print_verbose = 1")
+        print("Assuming print_verbose = 1 and log_blank = 0")
 
-#define <remove (the) first two chars> function
-def rftc(string):
+def rftc(string): #define <remove first two chars> function
     return string[2:]
 
-def pad_mac(mystr):
+def pad_mac(mystr): # define <pad mac address to 2 hex chars per section> function
     return mystr.rjust(2, "0")
 
-# Create a raw socket
-raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
-
-# Bind the socket to the WiFi interface
-raw_socket.bind(("wlan0", 0))
-
-# Set the socket to promiscuous mode
-raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
+raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003)) # Create a raw socket
+raw_socket.bind(("wlan0", 0)) # Bind the socket to the WiFi interface
+raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30) # Set the socket to promiscuous mode
 
 if debug:
     print("Socket in promiscuous mode created")
 
-# Loop indefinitely and capture packets
-while True:
-    # Receive a packet
-    packet = raw_socket.recvfrom(65565)
+while True: # Loop indefinitely and capture packets
+    packet = raw_socket.recvfrom(65535) # Receive a packet
     
-    # Unpack the packet header
-    eth_header = struct.unpack("!6s6s2s", packet[0][0:14])
+    eth_header = struct.unpack("!6s6s2s", packet[0][0:14]) # Unpack the packet header
     if debug:
         print("eth_header", eth_header)
     
@@ -48,12 +40,16 @@ while True:
     print("Dst MAC:\t", dst_mac)
     print("Eth Len:\t", eth_header[2])
     
-    #print("eth_proto", ethernet_header[2])
-    if eth_header[2] == b'\x08\x00':
-        #ipv4 packet
+    if debug:
+        print("eth_proto", ethernet_header[2])
+    
+    if eth_header[2] == b'\x08\x00': #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
-        #print("ip_proto", ip_protocol)
+        
+        if debug:
+            print("ip_proto", ip_protocol)
+        
         print("IP Header:\t", ip_header)
         
         #extract, format and print src and dst ip addresses
@@ -65,8 +61,7 @@ while True:
         tcp_data = b''
         udp_data = b''
         
-        if ip_protocol == 6:
-            # TCP packet
+        if ip_protocol == 6: # TCP packet
             print("TCP PACKET")
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
             tcp_data = packet[0][54:]
@@ -92,19 +87,16 @@ while True:
             if print_verbose:
                 print("Src Port:\t", tcp_header[0])
                 print("Dst Port:\t", tcp_header[1])
-                print("Seq Num:\t", tcp_header[2])
-                print("ACK Num:\t", tcp_header[3])
-                print("DOs Rsv NS:\t", tcp_header[4])
-                print("Oth. Flags:\t", tcp_header[5])
-                print("Win Size:\t", tcp_header[6])
-                print("TCP Hash:\t", tcp_header[7])
-                print("URG pnt:\t", tcp_header[8])
-                
-                # Print the payload data
-                print("TCP Payload:\t", tcp_data)
+                print("Seq Num:\t", tcp_header[2]) # sequence number (dual role, check wikipedia)
+                print("ACK Num:\t", tcp_header[3]) # acknowledgement number (if ACK set)
+                print("DOs Rsv NS:\t", tcp_header[4]) # (bits) Data offset (3), <reserved 000> (3), NS flag (1)
+                print("Oth. Flags:\t", tcp_header[5]) # bitwise: CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN
+                print("Win Size:\t", tcp_header[6]) # window size
+                print("TCP Hash:\t", tcp_header[7]) # checksum
+                print("URG Pnt:\t", tcp_header[8]) # URGENT pointer (if URG set)
+                print("TCP Payload:\t", tcp_data) # Print the payload data
             
-        elif ip_protocol == 17:
-            # UDP packet
+        elif ip_protocol == 17: # UDP packet
             print("UDP PACKET")
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
@@ -126,9 +118,8 @@ while True:
                 print("Src Port:\t", udp_header[0])
                 print("Dst Port:\t", udp_header[1])
                 print("UDP Length:\t", udp_header[2])
-                print("UDP Hash:\t", udp_header[3])
-                # Print the payload data
-                print("UDP Payload:\t", udp_data)
+                print("UDP Hash:\t", udp_header[3]) # checksum
+                print("UDP Payload:\t", udp_data) # Print the payload data
         
         if logging:
             if log_blank:
@@ -138,9 +129,10 @@ while True:
         if print_verbose:
             print("Extra Data:\t", packet[1])
         
-        print("") #line break between packets
         if logging:
             open("genesis.log", "w").write("\n") #write blank line to log file between packets
         
         if debug:
             print(packet)
+        
+        print("") #line break between packets
