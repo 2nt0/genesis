@@ -41,7 +41,7 @@ while True: # Loop indefinitely and capture packets
     print("Eth Len:\t", eth_header[2])
     
     if debug:
-        print("eth_proto", ethernet_header[2])
+        print("eth_proto", eth_header[2])
     
     if eth_header[2] == b'\x08\x00': #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
