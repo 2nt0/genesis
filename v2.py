@@ -1,9 +1,17 @@
 import socket
 import struct
 
-#define <take the last two chars> function
-def tltc(string):
-        return string[-2:]
+debug = int(input("Debug Mode? (0/1)"))
+
+#define <remove (the) first two chars> function
+def rftc(string):
+    return string[2:]
+
+def pad_mac(mylist):
+    mylisttwo = []
+    for i in mylist:
+        mylisttwo.append(i.rjust(2, "0"))
+    return mylisttwo
 
 # Create a raw socket
 raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
@@ -14,23 +22,28 @@ raw_socket.bind(("wlan0", 0))
 # Set the socket to promiscuous mode
 raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30)
 
+if debug:
+    print("Socket in promiscuous mode created")
+
 # Loop indefinitely and capture packets
 while True:
     # Receive a packet
     packet = raw_socket.recvfrom(65565)
-
+    
     # Unpack the packet header
-    ethernet_header = packet[0][0:14]
-    ethernet_header = struct.unpack("!6s6s2s", ethernet_header)
+    eth_header = struct.unpack("!6s6s2s", packet[0][0:14])
+    if debug:
+        print("eth_header", eth_header)
     
     #extract, format and print source and header macs
-    source_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[1])))).upper()
-    dest_mac = ":".join(map(tltc, map(hex, map(int, ethernet_header[0])))).upper() 
-    print("\nSrc MAC:\t{}\nDst MAC:\t{}".format(source_mac, dest_mac))
-    print("Length:\t", ethernet_header[2])
+    src_mac = ":".join(map(pad_mac, map(rftc, map(hex, map(int, eth_header[1])))))
+    dst_mac = ":".join(map(pad_mac, map(rftc, map(hex, map(int, eth_header[0])))))
+    print("Src MAC:\t", src_mac)
+    print("Dst MAC:\t", dst_mac)
+    print("Eth Len:\t", eth_header[2])
     
     #print("eth_proto", ethernet_header[2])
-    if ethernet_header[2] == b'\x08\x00':
+    if eth_header[2] == b'\x08\x00':
         #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_protocol = ip_header[6]
@@ -38,9 +51,10 @@ while True:
         print("IP Header:\t", ip_header)
         
         #extract, format and print src and dst ip addresses
-        ip_src = '.'.join(map(str, ip_header[8]))
-        ip_dst = '.'.join(map(str, ip_header[9]))
-        print("Src IP:\t{}\nDst IP:\t{}".format(ip_src, ip_dst))
+        src_ip = '.'.join(map(str, ip_header[8]))
+        dst_ip = '.'.join(map(str, ip_header[9]))
+        print("Src IP:\t", src_ip)
+        print("Dst IP:\t", dst_ip)
         
         if ip_protocol == 6:
             # TCP packet
@@ -56,7 +70,7 @@ while True:
             print("TCP Hash:\t", tcp_header[7])
             print("URG pnt:\t", tcp_header[8])
             tcp_data = packet[0][54:]
-
+            
             # Print the payload data
             print("TCP Payload:", tcp_data)
         elif ip_protocol == 17:
@@ -68,7 +82,13 @@ while True:
             print("UDP Length:\t", udp_header[2])
             print("UDP Hash:\t", udp_header[3])
             udp_data = packet[0][42:]
-
+            
             # Print the payload data
             print("UDP Payload:\t", udp_data)
-        print("Extra Data:\t", packet[1]) 
+        print("Extra Data:\t", packet[1])
+        
+        #line break between packets
+        print("")
+        
+        if debug:
+            print(packet)
