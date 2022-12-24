@@ -7,11 +7,8 @@ debug = int(input("Debug Mode? (0/1)"))
 def rftc(string):
     return string[2:]
 
-def pad_mac(mylist):
-    mylisttwo = []
-    for i in mylist:
-        mylisttwo.append(i.rjust(2, "0"))
-    return mylisttwo
+def pad_mac(mystr):
+    return mystr.rjust(2, "0"))
 
 # Create a raw socket
 raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003))
