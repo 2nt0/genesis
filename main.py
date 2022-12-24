@@ -123,9 +123,9 @@ while True: # Loop indefinitely and capture packets
         
         if logging:
             if log_blank:
-                    open("genesis.log", "wb").write("\nExtra Data:\t", packet[1])
+                    open("genesis.log", "wb").write("\nExtra Data:\t" + str(packet[1]))
             elif udp_data != b'' or tcp_data != b'':
-                    open("genesis.log", "wb").write("\nExtra Data:\t", packet[1])
+                    open("genesis.log", "wb").write("\nExtra Data:\t" + str(packet[1]))
         
         if print_verbose:
             print("Extra Data:\t", packet[1])
