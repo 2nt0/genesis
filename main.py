@@ -67,16 +67,16 @@ while True: # Loop indefinitely and capture packets
             tcp_data = packet[0][54:]
             
             def tcp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "w").write("\nSrc Port:\t", tcp_header[0])
-                open("genesis.log", "w").write("\nDst Port:\t", tcp_header[1])
-                open("genesis.log", "w").write("\nSeq Num:\t", tcp_header[2])
-                open("genesis.log", "w").write("\nACK Num:\t", tcp_header[3])
-                open("genesis.log", "w").write("\nDOs Rsv NS:\t", tcp_header[4])
-                open("genesis.log", "w").write("\nOth. Flags:\t", tcp_header[5])
-                open("genesis.log", "w").write("\nWin Size:\t", tcp_header[6])
-                open("genesis.log", "w").write("\nTCP Hash:\t", tcp_header[7])
-                open("genesis.log", "w").write("\nURG pnt:\t", tcp_header[8])
-                open("genesis.log", "w").write("\nTCP Payload:\t", tcp_data)
+                open("genesis.log", "w").write("\nSrc Port:\t" + str(tcp_header[0])))
+                open("genesis.log", "w").write("\nDst Port:\t" + str(tcp_header[1]))
+                open("genesis.log", "w").write("\nSeq Num:\t" + str(tcp_header[2]))
+                open("genesis.log", "w").write("\nACK Num:\t" + str(tcp_header[3]))
+                open("genesis.log", "w").write("\nDOs Rsv NS:\t" + str(tcp_header[4]))
+                open("genesis.log", "w").write("\nOth. Flags:\t" + str(tcp_header[5]))
+                open("genesis.log", "w").write("\nWin Size:\t" + str(tcp_header[6]))
+                open("genesis.log", "w").write("\nTCP Hash:\t" + str(tcp_header[7]))
+                open("genesis.log", "w").write("\nURG pnt:\t" + str(tcp_header[8]))
+                open("genesis.log", "w").write("\nTCP Payload:\t" + str(tcp_data))
             
             if logging:
                 if log_blank:
@@ -102,11 +102,11 @@ while True: # Loop indefinitely and capture packets
             udp_data = packet[0][42:]
             
             def udp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log", "wb").write("\nSrc Port:\t", udp_header[0])
-                open("genesis.log", "wb").write("\nDst Port:\t", udp_header[1])
-                open("genesis.log", "wb").write("\nUDP Length:\t", udp_header[2])
-                open("genesis.log", "wb").write("\nUDP Hash:\t", udp_header[3])
-                open("genesis.log", "wb").write("\nUDP Payload:\t", udp_data)
+                open("genesis.log", "wb").write("\nSrc Port:\t" + str(udp_header[0]))
+                open("genesis.log", "wb").write("\nDst Port:\t" + str(udp_header[1]))
+                open("genesis.log", "wb").write("\nUDP Length:\t" + str(udp_header[2]))
+                open("genesis.log", "wb").write("\nUDP Hash:\t" + str(udp_header[3]))
+                open("genesis.log", "wb").write("\nUDP Payload:\t" + str(udp_data))
             
             if logging:
                 if log_blank:
