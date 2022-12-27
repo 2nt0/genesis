@@ -90,7 +90,7 @@ while True: # Loop indefinitely and capture packets
         tcp_data = b''
         udp_data = b''
         
-        if eth_header[6] == 6: # TCP packet
+        if ip_header[6] == 6: # TCP packet
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
             tcp_data = packet[0][54:]
             
@@ -121,7 +121,7 @@ while True: # Loop indefinitely and capture packets
                 for i in log_list:
                     print(i)
             
-        elif eth_header[6] == 17: # UDP packet
+        elif ip_header[6] == 17: # UDP packet
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
             
