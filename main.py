@@ -126,7 +126,7 @@ while True: # Loop indefinitely and capture packets
             #set udp logging lists
             udp_log_def = ["UDP PACKET"]
             udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Length:\t" + str(udp_header[2])]
-            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Payload:\t" + str(udp_data)
+            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Payload:\t" + str(udp_data)]
             
             #set udp log lists
             if debug == 2:
