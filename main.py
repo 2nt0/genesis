@@ -92,6 +92,7 @@ while True: # Loop indefinitely and capture packets
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
             tcp_data = packet[0][54:]
             
+            #set tcp logging lists
             tcp_log_def = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)]
             tcp_log_main = ["Src Port:\t" + str(tcp_header[0]), "Dst Port:\t" + str(tcp_header[1]), "Seq Num:\t" + str(tcp_header[2])]
             tcp_log_debug = ["\nip_proto"+str(ip_protocol), "IP Header:\t"+str(ip_header), "ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]),
@@ -123,9 +124,13 @@ while True: # Loop indefinitely and capture packets
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
             
+            #set udp logging lists
+            udp_log_def = []
+            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1])]
+            udp_log_debug = []
             def udp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log",  "a").write("\nSrc Port:\t" + str(udp_header[0]))
-                open("genesis.log",  "a").write("\nDst Port:\t" + str(udp_header[1]))
+                open("genesis.log",  "a").write()
+                open("genesis.log",  "a").write("\n)
                 open("genesis.log",  "a").write("\nUDP Length:\t" + str(udp_header[2]))
                 open("genesis.log",  "a").write("\nUDP Hash:\t" + str(udp_header[3]))
                 open("genesis.log",  "a").write("\nUDP Payload:\t" + str(udp_data))
