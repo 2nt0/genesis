@@ -130,11 +130,11 @@ while True: # Loop indefinitely and capture packets
             
             #set udp log lists
             if debug == 2:
-                log_list = udp_list_def + udp_list_main + udp_list_debug
+                log_list = udp_log_def + udp_log_main + udp_log_debug
             elif debug == 1:
-                log_list = udp_list_def + udp_list_main
+                log_list = udp_log_def + udp_log_main
             else:
-                log_list = udp_list_def
+                log_list = udp_log_def
             
             #print/log udp log lists
             if logging:
