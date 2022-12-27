@@ -1,17 +1,9 @@
 import socket
 import struct
 
-debug = int(input("Debug mode? (0/1)"))
+debug = int(input("How much detail to output? (0/1/2)"))
 logging = int(input("Log output? (0/1)"))
-
-if logging:
-    log_blank = int(input("Log blank payloads? (0/1)"))
-    print_verbose = int(input("Print all details? (0/1)"))
-else:
-    log_blank = 0
-    print_verbose = 1
-    if debug:
-        print("Assuming print_verbose = 1 and log_blank = 0")
+print_verbose = int(input("Print output? (0/1)"))
 
 def rftc(string): #define <remove first two chars> function
     return string[2:]
@@ -29,81 +21,102 @@ if debug:
 while True: # Loop indefinitely and capture packets
     packet = raw_socket.recvfrom(65535) # Receive a packet
     
-    eth_header = struct.unpack("!6s6s2s", packet[0][0:14]) # Unpack the packet header
-    if debug:
-        print("eth_header", eth_header)
+    eth_header = struct.unpack("!6s6s2s", packet[0][0:14]) # format the packet header into a tuple
     
     #extract, format and print source and header macs
     src_mac = ":".join(map(pad_mac, map(rftc, map(hex, map(int, eth_header[1])))))
     dst_mac = ":".join(map(pad_mac, map(rftc, map(hex, map(int, eth_header[0])))))
-    print("Src MAC:\t", src_mac)
-    print("Dst MAC:\t", dst_mac)
-    print("Eth Len:\t", eth_header[2])
     
-    if debug:
-        print("eth_proto", eth_header[2])
+    #determine whether 2s from eth_header is length or protocol; set each variable accordingly
+    #NOTE: IF 1500 < eth_header[2] < 1536, LEN OR PROTO IS UNDEFINED (AS DEFINED BY IEEE Std 802.3-2005, 3.2.6) AND BOTH RETURN None
+    eth_len = None
+    eth_proto = None
+    if eth_header[2] <= 1500:
+        eth_len = eth_header[2]
+    elif eth_header[2] >= 1536:
+        eth_proto = eth_header[2]
     
-    if eth_header[2] == b'\x08\x00': #ipv4 packet
+    #create general log lists for all recieved eth packets, debug and main variants
+    gen_log_def = ["Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
+    gen_log_main = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto)]
+    gen_log_debug = ["Eth Header:\t"+str(eth_header)]
+    
+    #set list to print and/or log
+    if debug == 2:
+        log_list = gen_log_def + gen_log_main + gen_log_debug
+    elif debug == 1:
+        log_list = gen_log_def + gen_log_main
+    else:
+        log_list = gen_log_def
+    
+    #print/log what the user wants to be printed/logged
+    if logging:
+        for i in log_list:
+            open("genesis.log",  "a").write("\n"+i)
+    if print_verbose:
+        for i in log_list:
+            print(i)
+    
+    if eth_proto[2] == b'\x08\x00': #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
-        ip_protocol = ip_header[6]
-        
-        if debug:
-            print("ip_proto", ip_protocol)
-        
-        print("IP Header:\t", ip_header)
+        ip_proto = ip_header[6]
         
         #extract, format and print src and dst ip addresses
         src_ip = '.'.join(map(str, ip_header[8]))
         dst_ip = '.'.join(map(str, ip_header[9]))
-        print("Src IP:\t\t", src_ip)
-        print("Dst IP:\t\t", dst_ip)
+        
+        ipv4_log_def = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip]
+        ipv4_log_debug = ["IP Protocol:\t"+str(ip+proto)]
+        ipv4_log_main = ["IP Header:\t"+str(ip_header)]
+        
+        #set list to print and/or log
+        if debug == 2:
+            log_list = ipv4_log_def + ipv4_log_main + ipv4_log_debug
+        elif debug == 1:
+            log_list = ipv4_log_def + ipv4_log_main
+        else:
+            log_list = ipv4_log_def
+
+        #print/log what the user wants to be printed/logged
+        if logging:
+            for i in log_list:
+                open("genesis.log",  "a").write("\n"+i)
+        if print_verbose:
+            for i in log_list:
+                print(i)
         
         tcp_data = b''
         udp_data = b''
         
         if ip_protocol == 6: # TCP packet
-            print("TCP PACKET")
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
             tcp_data = packet[0][54:]
             
-            def tcp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                if debug:
-                    open("genesis.log",  "a").write("\nip_proto" + str(ip_protocol))
-                open("genesis.log",  "a").write("\nIP Header:\t" + str(ip_header))
-                open("genesis.log",  "a").write("\nSrc IP:\t\t" + str(src_ip))
-                open("genesis.log",  "a").write("\nDst IP:\t\t" + str(dst_ip))
-                open("genesis.log",  "a").write("\nTCP PACKET")
-                open("genesis.log",  "a").write("\nSrc MAC:\t" + str(src_mac))
-                open("genesis.log",  "a").write("\nDst MAC:\t" + str(dst_mac))
-                open("genesis.log",  "a").write("\nEth Len:\t" + str(eth_header[2]))
-                open("genesis.log",  "a").write("\nSrc Port:\t" + str(tcp_header[0]))
-                open("genesis.log",  "a").write("\nDst Port:\t" + str(tcp_header[1]))
-                open("genesis.log",  "a").write("\nSeq Num:\t" + str(tcp_header[2]))
-                open("genesis.log",  "a").write("\nACK Num:\t" + str(tcp_header[3]))
-                open("genesis.log",  "a").write("\nDOs Rsv NS:\t" + str(tcp_header[4]))
-                open("genesis.log",  "a").write("\nOth. Flags:\t" + str(tcp_header[5]))
-                open("genesis.log",  "a").write("\nWin Size:\t" + str(tcp_header[6]))
-                open("genesis.log",  "a").write("\nTCP Hash:\t" + str(tcp_header[7]))
-                open("genesis.log",  "a").write("\nURG pnt:\t" + str(tcp_header[8]))
-                open("genesis.log",  "a").write("\nTCP Payload:\t" + str(tcp_data))
+            tcp_log_def = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)]
+            tcp_log_main = ["Src Port:\t" + str(tcp_header[0]), "Dst Port:\t" + str(tcp_header[1]), "Seq Num:\t" + str(tcp_header[2])]
+            tcp_log_debug = ["\nip_proto"+str(ip_protocol), "IP Header:\t"+str(ip_header), "ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]),
+            "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]), "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8]),
+            "TCP Payload:\t"+str(tcp_data)]
+            # seq num: sequence number (dual role, check wikipedia); ACK Num: acknowledgement number (if ACK set);
+            # DOs Rsv NS: # (bits) Data offset (3), <reserved 000> (3), NS flag (1); 
+            # Oth. Flags (bitwise): CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN; Win Size: Window size; TCP Hash: checksum;
+            # URG Pnt: URGENT pointer (if URG set)
             
+            #set list to print and/or log
+            if debug == 2:
+                log_list = tcp_log_def + tcp_log_main + tcp_log_debug
+            elif debug == 1:
+                log_list = tcp_log_def + tcp_log_main
+            else:
+                log_list = tcp_log_def
+            
+            #print/log what the user wants to be printed/logged
             if logging:
-                if log_blank:
-                    tcp_log()
-                elif tcp_data != b'':
-                    tcp_log()
-            
+                for i in log_list:
+                    open("genesis.log",  "a").write("\n"+i)
             if print_verbose:
-                print("Src Port:\t", tcp_header[0])
-                print("Dst Port:\t", tcp_header[1])
-                print("Seq Num:\t", tcp_header[2]) # sequence number (dual role, check wikipedia)
-                print("ACK Num:\t", tcp_header[3]) # acknowledgement number (if ACK set)
-                print("DOs Rsv NS:\t", tcp_header[4]) # (bits) Data offset (3), <reserved 000> (3), NS flag (1)
-                print("Oth. Flags:\t", tcp_header[5]) # bitwise: CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN
-                print("Win Size:\t", tcp_header[6]) # window size
-                print("TCP Hash:\t", tcp_header[7]) # checksum
-                print("URG Pnt:\t", tcp_header[8]) # URGENT pointer (if URG set)
-                print("TCP Payload:\t", tcp_data) # Print the payload data
+                for i in log_list:
+                    print(i)
             
         elif ip_protocol == 17: # UDP packet
             print("UDP PACKET")
@@ -147,4 +160,4 @@ while True: # Loop indefinitely and capture packets
         
         print("") #line break between packets
         
-        #TODO more efficient logging function, make sure all prints are logged (maybe rearrange all prints)
+        #TODO more efficient logging function, reconcile udp with tcp logging
