@@ -37,9 +37,9 @@ while True: # Loop indefinitely and capture packets
         eth_proto = eth_header[2]
     
     #create general log lists for all recieved eth packets, debug and main variants
-    gen_log_def = ["Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
+    gen_log_def = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
     gen_log_main = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto)]
-    gen_log_debug = ["Eth Header:\t"+str(eth_header)]
+    gen_log_debug = ["Eth Header:\t"+str(eth_header), "Extra Data:\t"+str(packet[1]), "Packet:\t"+str(packet)]
     
     #set list to print and/or log
     if debug == 2:
@@ -120,49 +120,26 @@ while True: # Loop indefinitely and capture packets
                     print(i)
             
         elif ip_protocol == 17: # UDP packet
-            print("UDP PACKET")
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
             
             #set udp logging lists
-            udp_log_def = []
-            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1])]
-            udp_log_debug = []
-            def udp_log(): # probably a better way to do this, including the <print_verbose> part with lists but cba
-                open("genesis.log",  "a").write()
-                open("genesis.log",  "a").write("\n)
-                open("genesis.log",  "a").write("\nUDP Length:\t" + str(udp_header[2]))
-                open("genesis.log",  "a").write("\nUDP Hash:\t" + str(udp_header[3]))
-                open("genesis.log",  "a").write("\nUDP Payload:\t" + str(udp_data))
+            udp_log_def = ["UDP PACKET"]
+            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Length:\t" + str(udp_header[2])]
+            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Payload:\t" + str(udp_data)
             
+            #set udp log lists
+            if debug == 2:
+                log_list = udp_list_def + udp_list_main + udp_list_debug
+            elif debug == 1:
+                log_list = udp_list_def + udp_list_main
+            else:
+                log_list = udp_list_def
+            
+            #print/log udp log lists
             if logging:
-                if log_blank:
-                    udp_log()
-                elif udp_data != b'':
-                    udp_log()
-            
+                for i in log_list:
+                    open("genesis.log",  "a").write("\n"+i)
             if print_verbose:
-                print("Src Port:\t", udp_header[0])
-                print("Dst Port:\t", udp_header[1])
-                print("UDP Length:\t", udp_header[2])
-                print("UDP Hash:\t", udp_header[3]) # checksum
-                print("UDP Payload:\t", udp_data) # Print the payload data
-        
-        if logging:
-            if log_blank:
-                    open("genesis.log",  "a").write("\nExtra Data:\t" + str(packet[1]))
-            elif udp_data != b'' or tcp_data != b'':
-                    open("genesis.log",  "a").write("\nExtra Data:\t" + str(packet[1]))
-        
-        if print_verbose:
-            print("Extra Data:\t", packet[1])
-        
-        if logging:
-            open("genesis.log",  "a").write("\n") #write blank line to log file between packets
-        
-        if debug:
-            print(packet)
-        
-        print("") #line break between packets
-        
-        #TODO more efficient logging function, reconcile udp with tcp logging
+                for i in log_list:
+                    print(i)
