@@ -68,7 +68,7 @@ while True: # Loop indefinitely and capture packets
         dst_ip = '.'.join(map(str, ip_header[9]))
         
         ipv4_log_def = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip]
-        ipv4_log_debug = ["IP Protocol:\t"+str(ip+proto)]
+        ipv4_log_debug = ["IP Protocol:\t"+str(ip_proto)]
         ipv4_log_main = ["IP Header:\t"+str(ip_header)]
         
         #set list to print and/or log
