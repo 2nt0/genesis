@@ -1,9 +1,23 @@
 import socket
 import struct
 
-debug = int(input("How much detail to output? (0/1/2)"))
-logging = int(input("Log output? (0/1)"))
-print_verbose = int(input("Print output? (0/1)"))
+debug = input("How much detail to output? (0/1/2/3)")
+while not(debug in ["0", "1", "2", "3"]):
+    print("Please enter a number: 0, 1, 2 or 3")
+    debug = input("How much detail to output? (0/1/2/3)")
+debug = int(debug)
+
+logging = input("Log output? (0/1)")
+while not(logging in ["0", "1"]):
+    print("Please enter a number: 0, 1")
+    logging = input("Log output? (0/1)")
+logging = int(logging)
+
+print_verbose = input("Print output? (0/1)")
+while not(print_verbose in ["0", "1"]
+      print("Please enter a number: 0, 1")
+      print_verbose = input("Print output? (0/1)")
+print_verbose = int(print_verbose)
 
 def rftc(string): #define <remove first two chars> function
     return string[2:]
@@ -40,8 +54,9 @@ while True: # Loop indefinitely and capture packets
     
     #create general log lists for all recieved eth packets, debug and main variants
     gen_log_def = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
-    gen_log_main = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto)]
-    gen_log_debug = ["Eth Header:\t"+str(eth_header), "Extra Data:\t"+str(packet[1])]
+    gen_log_main = []
+    gen_log_debug = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto), "Extra Data:\t"+str(packet[1])] # eth protocol 2048 is ipv4
+    gen_log_dev = ["Eth Header:\t"+str(eth_header)]
     
     #set list to print and/or log
     if debug == 2:
@@ -68,8 +83,9 @@ while True: # Loop indefinitely and capture packets
         dst_ip = '.'.join(map(str, ip_header[9]))
         
         ipv4_log_def = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip]
-        ipv4_log_debug = ["IP Protocol:\t"+str(ip_proto)]
-        ipv4_log_main = ["IP Header:\t"+str(ip_header)]
+        ipv4_log_main = []
+        ipv4_log_debug = ["IP Protocol:\t"+str(ip_proto)] # ip protocol 6 is tcp, 17 is udp
+        ipv4_log_dev = ["IP Header:\t"+str(ip_header)]
         
         #set list to print and/or log
         if debug == 2:
@@ -96,10 +112,10 @@ while True: # Loop indefinitely and capture packets
             
             #set tcp logging lists
             tcp_log_def = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)]
-            tcp_log_main = ["Src Port:\t" + str(tcp_header[0]), "Dst Port:\t" + str(tcp_header[1]), "Seq Num:\t" + str(tcp_header[2])]
-            tcp_log_debug = ["\nip_proto"+str(ip_protocol), "IP Header:\t"+str(ip_header), "ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]),
-            "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]), "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8]),
-            "TCP Payload:\t"+str(tcp_data)]
+            tcp_log_main = ["Src Port:\t" + str(tcp_header[0]), "Dst Port:\t" + str(tcp_header[1]), "Seq Num:\t" + str(tcp_header[2]), "TCP Payload:\t"+str(tcp_data)]
+            tcp_log_debug = ["ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]), "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]),
+            "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8])]
+            tcp_log_dev = ["TCP Packet:\t"+packet[0][34:]]
             # seq num: sequence number (dual role, check wikipedia); ACK Num: acknowledgement number (if ACK set);
             # DOs Rsv NS: # (bits) Data offset (3), <reserved 000> (3), NS flag (1); 
             # Oth. Flags (bitwise): CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN; Win Size: Window size; TCP Hash: checksum;
@@ -126,9 +142,10 @@ while True: # Loop indefinitely and capture packets
             udp_data = packet[0][42:]
             
             #set udp logging lists
-            udp_log_def = ["UDP PACKET"]
-            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Length:\t" + str(udp_header[2])]
-            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Payload:\t" + str(udp_data)]
+            udp_log_def = ["UDP PACKET (so no IPs given)"] # User Datagram Protocol does not provide IP addresses
+            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)]
+            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])]
+            udp_log_dev = ["UDP Packet:\t"+packet[0][42:]
             
             #set udp log lists
             if debug == 2:
