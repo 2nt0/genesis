@@ -35,7 +35,7 @@ while True: # Loop indefinitely and capture packets
     lop = int.from_bytes(eth_header[2], "big") #stands for "length or protocol"
     if lop <= 1500:
         eth_len = lop
-    elif eth_header[2] >= 1536:
+    elif lop >= 1536:
         eth_proto = lop
     
     #create general log lists for all recieved eth packets, debug and main variants
