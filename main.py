@@ -41,7 +41,7 @@ while True: # Loop indefinitely and capture packets
     #create general log lists for all recieved eth packets, debug and main variants
     gen_log_def = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
     gen_log_main = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto)]
-    gen_log_debug = ["Eth Header:\t"+str(eth_header), "Extra Data:\t"+str(packet[1]), "Packet:\t"+str(packet)]
+    gen_log_debug = ["Eth Header:\t"+str(eth_header), "Extra Data:\t"+str(packet[1])]
     
     #set list to print and/or log
     if debug == 2:
