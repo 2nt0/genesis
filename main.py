@@ -32,7 +32,7 @@ while True: # Loop indefinitely and capture packets
     eth_len = None
     eth_proto = None
     
-    lop = int.from_bytes(eth_header[2]) #stands for "length or protocol"
+    lop = int.from_bytes(eth_header[2], "big") #stands for "length or protocol"
     if lop <= 1500:
         eth_len = lop
     elif eth_header[2] >= 1536:
