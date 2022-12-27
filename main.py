@@ -59,7 +59,7 @@ while True: # Loop indefinitely and capture packets
         for i in log_list:
             print(i)
     
-    if eth_proto[2] == b'\x08\x00': #ipv4 packet
+    if socket.nthos(eth_proto) == 8: #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_proto = ip_header[6]
         
