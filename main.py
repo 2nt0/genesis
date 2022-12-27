@@ -31,10 +31,12 @@ while True: # Loop indefinitely and capture packets
     #NOTE: IF 1500 < eth_header[2] < 1536, LEN OR PROTO IS UNDEFINED (AS DEFINED BY IEEE Std 802.3-2005, 3.2.6) AND BOTH RETURN None
     eth_len = None
     eth_proto = None
-    if eth_header[2] <= 1500:
-        eth_len = eth_header[2]
+    
+    lop = int.from_bytes(eth_header[2]) #stands for "length or protocol"
+    if lop <= 1500:
+        eth_len = lop
     elif eth_header[2] >= 1536:
-        eth_proto = eth_header[2]
+        eth_proto = lop
     
     #create general log lists for all recieved eth packets, debug and main variants
     gen_log_def = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
