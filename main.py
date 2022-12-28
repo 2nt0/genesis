@@ -1,6 +1,12 @@
 import socket
 import struct
 
+def rftc(string): #define <remove first two chars> function
+    return string[2:]
+
+def pad_mac(mystr): # define <pad mac address to 2 hex chars per section> function
+    return mystr.rjust(2, "0")
+
 debug = input("How much detail to output? (0/1/2/3)")
 while not(debug in ["0", "1", "2", "3"]):
     print("Please enter a number: 0, 1, 2 or 3")
@@ -14,16 +20,10 @@ while not(logging in ["0", "1"]):
 logging = int(logging)
 
 print_verbose = input("Print output? (0/1)")
-while not(print_verbose in ["0", "1"]
+while not(print_verbose in ["0", "1"]):
       print("Please enter a number: 0, 1")
       print_verbose = input("Print output? (0/1)")
 print_verbose = int(print_verbose)
-
-def rftc(string): #define <remove first two chars> function
-    return string[2:]
-
-def pad_mac(mystr): # define <pad mac address to 2 hex chars per section> function
-    return mystr.rjust(2, "0")
 
 raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003)) # Create a raw socket
 raw_socket.bind(("wlan0", 0)) # Bind the socket to the WiFi interface
