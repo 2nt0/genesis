@@ -145,7 +145,7 @@ while True: # Loop indefinitely and capture packets
             udp_log_def = ["UDP PACKET (so no IPs given)"] # User Datagram Protocol does not provide IP addresses
             udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)]
             udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])]
-            udp_log_dev = ["UDP Packet:\t"+packet[0][42:]
+            udp_log_dev = ["UDP Packet:\t"+packet[0][42:]]
             
             #set udp log lists
             if debug == 2:
