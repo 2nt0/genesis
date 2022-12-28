@@ -52,19 +52,14 @@ while True: # Loop indefinitely and capture packets
     elif lop >= 1536:
         eth_proto = lop
     
-    #create general log lists for all recieved eth packets, debug and main variants
-    gen_log_def = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac]
-    gen_log_main = []
-    gen_log_debug = ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto), "Extra Data:\t"+str(packet[1])] # eth protocol 2048 is ipv4
-    gen_log_dev = ["Eth Header:\t"+str(eth_header)]
-    
-    #set list to print and/or log
-    if debug == 2:
-        log_list = gen_log_def + gen_log_main + gen_log_debug
-    elif debug == 1:
-        log_list = gen_log_def + gen_log_main
-    else:
-        log_list = gen_log_def
+    #set lists to print and/or log
+    log_list = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac] # legacy gen_log_def
+    if debug >= 1:
+        log_list += [] # legacy gen_log_main
+    if debug >= 2:
+        log_list += ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto), "Extra Data:\t"+str(packet[1])] # eth protocol 2048 is ipv4, legacy gen_log_debug
+    if debug >= 3:
+        log_list += ["Eth Header:\t"+str(eth_header)] # legacy gen_log_dev
     
     #print/log what the user wants to be printed/logged
     if logging:
@@ -82,18 +77,14 @@ while True: # Loop indefinitely and capture packets
         src_ip = '.'.join(map(str, ip_header[8]))
         dst_ip = '.'.join(map(str, ip_header[9]))
         
-        ipv4_log_def = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip]
-        ipv4_log_main = []
-        ipv4_log_debug = ["IP Protocol:\t"+str(ip_proto)] # ip protocol 6 is tcp, 17 is udp
-        ipv4_log_dev = ["IP Header:\t"+str(ip_header)]
-        
-        #set list to print and/or log
-        if debug == 2:
-            log_list = ipv4_log_def + ipv4_log_main + ipv4_log_debug
-        elif debug == 1:
-            log_list = ipv4_log_def + ipv4_log_main
-        else:
-            log_list = ipv4_log_def
+        #set lists to print and/or log
+        log_list = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip] # legacy ipv4_log_def
+        if debug >= 1:
+            log_list += [] # legacy ipv4_log_main
+        if debug >= 2:
+            log_list += ["IP Protocol:\t"+str(ip_proto)] # ip protocol 6 is tcp, 17 is udp, legacy ipv4_log_debug
+        if debug >= 3:
+            log_list += ["IP Header:\t"+str(ip_header)] # legacy ipv4_log_dev
 
         #print/log what the user wants to be printed/logged
         if logging:
@@ -110,25 +101,16 @@ while True: # Loop indefinitely and capture packets
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
             tcp_data = packet[0][54:]
             
-            #set tcp logging lists
-            tcp_log_def = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)]
-            tcp_log_main = ["Src Port:\t" + str(tcp_header[0]), "Dst Port:\t" + str(tcp_header[1]), "Seq Num:\t" + str(tcp_header[2]), "TCP Payload:\t"+str(tcp_data)]
-            tcp_log_debug = ["ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]), "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]),
-            "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8])]
-            tcp_log_dev = ["TCP Packet:\t"+packet[0][34:]]
-            # seq num: sequence number (dual role, check wikipedia); ACK Num: acknowledgement number (if ACK set);
-            # DOs Rsv NS: # (bits) Data offset (3), <reserved 000> (3), NS flag (1); 
-            # Oth. Flags (bitwise): CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN; Win Size: Window size; TCP Hash: checksum;
-            # URG Pnt: URGENT pointer (if URG set)
-            
-            #set list to print and/or log
-            if debug == 2:
-                log_list = tcp_log_def + tcp_log_main + tcp_log_debug
-            elif debug == 1:
-                log_list = tcp_log_def + tcp_log_main
-            else:
-                log_list = tcp_log_def
-            
+            #set lists to print and/or log
+            log_list = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)] # legacy tcp_log_def
+            if debug >= 1:
+                log_list += ["Src Port:\t"+str(tcp_header[0]), "Dst Port:\t"+str(tcp_header[1]), "Seq Num:\t"+str(tcp_header[2]), "TCP Payload:\t"+str(tcp_data)] # legacy tcp_log_main
+            if debug >= 2:
+                log_list += ["ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]), "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]), "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8])] # legacy tcp_log_debug
+            if debug >= 3:
+                log_list += ["TCP Packet:\t"+packet[0][34:]] # legacy tcp_log_debug
+            # seq num: sequence number (dual role, check wikipedia); ACK Num: acknowledgement number (if ACK set); DOs Rsv NS: # (bits) Data offset (3), <reserved 000> (3), NS flag (1); Oth. Flags (bitwise): CWR, ECE (SYN-dependant), URG, ACK, PSH, RST, SYN, FIN; Win Size: Window size; TCP Hash: checksum; URG Pnt: URGENT pointer (if URG set)
+
             #print/log what the user wants to be printed/logged
             if logging:
                 for i in log_list:
@@ -141,19 +123,14 @@ while True: # Loop indefinitely and capture packets
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
             
-            #set udp logging lists
-            udp_log_def = ["UDP PACKET (so no IPs given)"] # User Datagram Protocol does not provide IP addresses
-            udp_log_main = ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)]
-            udp_log_debug = ["UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])]
-            udp_log_dev = ["UDP Packet:\t"+packet[0][42:]]
-            
-            #set udp log lists
-            if debug == 2:
-                log_list = udp_log_def + udp_log_main + udp_log_debug
-            elif debug == 1:
-                log_list = udp_log_def + udp_log_main
-            else:
-                log_list = udp_log_def
+            #set lists to print and/or log
+            log_list = ["UDP PACKET (so no IPs given)"] # User Datagram Protocol does not provide IP addresses, legacy udp_log_def
+            if debug >= 1:
+                log_list += ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)] # legacy udp_log_main
+            if debug >= 2:
+                log_list += ["UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])] # legacy udp_log_debug
+            if debug >= 3:
+                log_list += ["UDP Packet:\t"+packet[0][42:]] # legacy udp_log_dev
             
             #print/log udp log lists
             if logging:
