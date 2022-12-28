@@ -102,9 +102,9 @@ while True: # Loop indefinitely and capture packets
             tcp_data = packet[0][54:]
             
             #set lists to print and/or log
-            log_list = ["TCP PACKET", "Src IP:\t\t" + str(src_ip), "Dst IP:\t\t" + str(dst_ip)] # legacy tcp_log_def
+            log_list = [] # legacy tcp_log_def
             if debug >= 1:
-                log_list += ["Src Port:\t"+str(tcp_header[0]), "Dst Port:\t"+str(tcp_header[1]), "Seq Num:\t"+str(tcp_header[2]), "TCP Payload:\t"+str(tcp_data)] # legacy tcp_log_main
+                log_list += ["TCP PACKET", "Src Port:\t"+str(tcp_header[0]), "Dst Port:\t"+str(tcp_header[1]), "Seq Num:\t"+str(tcp_header[2]), "TCP Payload:\t"+str(tcp_data)] # legacy tcp_log_main
             if debug >= 2:
                 log_list += ["ACK Num:\t"+str(tcp_header[3]), "DOs Rsv NS:\t"+str(tcp_header[4]), "Oth. Flags:\t"+str(tcp_header[5]), "Win Size:\t"+str(tcp_header[6]), "TCP Hash:\t"+str(tcp_header[7]), "URG pnt:\t"+str(tcp_header[8])] # legacy tcp_log_debug
             if debug >= 3:
@@ -124,9 +124,9 @@ while True: # Loop indefinitely and capture packets
             udp_data = packet[0][42:]
             
             #set lists to print and/or log
-            log_list = ["UDP PACKET (so no IPs given)"] # User Datagram Protocol does not provide IP addresses, legacy udp_log_def
+            log_list = [] # User Datagram Protocol does not provide IP addresses, legacy udp_log_def
             if debug >= 1:
-                log_list += ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)] # legacy udp_log_main
+                log_list += ["UDP PACKET", "Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)] # legacy udp_log_main
             if debug >= 2:
                 log_list += ["UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])] # legacy udp_log_debug
             if debug >= 3:
