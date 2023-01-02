@@ -151,6 +151,7 @@ while True: # Loop indefinitely and capture packets
         
         parse_ip_data(ip_data, ip_proto, logging, print_verbose)
         
+        
     elif eth_proto == 34525: #ipv6 packet
         ip_header = struct.unpack('!IHBB16s16s', eth_data[:40])
         ip_data = eth_data[40:]
@@ -184,4 +185,4 @@ while True: # Loop indefinitely and capture packets
     
     else:
         if debug >= 3:
-            open("genesis_eth_proto.log",  "a").write(str(eth_proto)+"\n")
+            open("genesis_eth_proto.log",  "a").write(str(lop)+"\n")
