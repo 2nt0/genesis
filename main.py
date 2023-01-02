@@ -1,5 +1,6 @@
 # TODO:
 # add ARP parsing (if eth_proto == 2054)
+# add system launch options (eg main.py -d 3 -l 0 -p 1)
 
 import socket
 import struct
@@ -122,7 +123,7 @@ while True: # Loop indefinitely and capture packets
     
     
     if eth_proto == 2048: #ipv4 packet
-        ihl = int.from_bytes(packet[14]) - 64 # ipv4 header length in number of quad-octets
+        ihl = int.from_bytes(eth_data[0]) - 64 # ipv4 header length in number of quad-octets
         ip_header = struct.unpack('!BBHHHBBH4s4s'+str(ihl-5)+"s", eth_data[:4*ihl])
         ip_data = eth_data[4*ihl:]
         ip_proto = ip_header[6]
