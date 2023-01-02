@@ -91,7 +91,7 @@ print_verbose = int(print_verbose)
 raw_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.htons(0x0003)) # Create a raw socket
 raw_socket.bind(("wlan0", 0)) # Bind the socket to the WiFi interface
 raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30) 
-raw_socket.setsockopt(socket.SOL_SOCKET, socket.PACKET_ADD_MEMBERSHIP, struct.pack("3s3s", b"\x01\x00\x05", b"\x00"*3)) # Set the socket to promiscuous mode
+raw_socket.setsockopt(socket.SOL_SOCKET, socket.PACKET_MR_PROMISC, 1) # Set the socket to promiscuous mode
 
 if debug:
     print("Socket in promiscuous mode created")
