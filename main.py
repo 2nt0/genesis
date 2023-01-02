@@ -144,6 +144,9 @@ while True: # Loop indefinitely and capture packets
     elif eth_proto == 34525: #ipv6 packet
         pass
     
+    elif eth_proto == 2054: # ARP packet
+        pass
+    
     else:
         if debug >= 3:
             open("genesis_eth_proto.log",  "a").write(str(eth_proto)+"\n")
