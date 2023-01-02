@@ -115,11 +115,11 @@ while True: # Loop indefinitely and capture packets
     #set lists to print and/or log
     log_list = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac] # legacy gen_log_def
     if debug >= 1:
-        log_list += ["Eth Protocol:\t"+str(eth_proto)] # legacy gen_log_main
+        log_list += ["Eth Protocol:\t"+str(eth_proto)] # eth protocol 2048 is ipv4; 34525 is ipv6, legacy gen_log_main
     if debug >= 2:
-        log_list += ["Extra Data:\t"+str(packet[1])] # eth protocol 2048 is ipv4; 34525 is ipv6, legacy gen_log_debug
+        log_list += [] # legacy gen_log_debug
     if debug >= 3:
-        log_list += ["Eth Header:\t"+str(eth_header)] # legacy gen_log_dev
+        log_list += ["Eth Header:\t"+str(eth_header), "Extra Data:\t"+str(packet[1])] # legacy gen_log_dev
     
     #print/log what the user wants to be printed/logged
     if logging:
@@ -132,7 +132,7 @@ while True: # Loop indefinitely and capture packets
     
     if eth_proto == 2048: #ipv4 packet
         ihl = eth_data[0] - 64 # ipv4 header length in number of quad-octets
-        ip_header = struct.unpack('!BBHHHBBH4s4s'+str(ihl-5)+"s", eth_data[:4*ihl])
+        ip_header = struct.unpack('!BBHHHBBH4s4s'+str((ihl-5)*4)+"s", eth_data[:4*ihl])
         ip_data = eth_data[4*ihl:]
         ip_proto = ip_header[6]
         
