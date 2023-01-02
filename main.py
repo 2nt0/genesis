@@ -54,8 +54,8 @@ while True: # Loop indefinitely and capture packets
     
     #set lists to print and/or log
     log_list = ["", "Src MAC:\t"+src_mac, "Dst MAC:\t"+dst_mac] # legacy gen_log_def
-    if debug >= 1:
-        log_list += [] # legacy gen_log_main
+    '''if debug >= 1:
+        log_list += [] # legacy gen_log_main'''
     if debug >= 2:
         log_list += ["Eth Length:\t"+str(eth_len), "Eth Protocol:\t"+str(eth_proto), "Extra Data:\t"+str(packet[1])] # eth protocol 2048 is ipv4; 34525 is ipv6, legacy gen_log_debug
     if debug >= 3:
@@ -69,6 +69,7 @@ while True: # Loop indefinitely and capture packets
         for i in log_list:
             print(i)
     
+    
     if eth_proto == 2048: #ipv4 packet
         ip_header = struct.unpack('!BBHHHBBH4s4s', packet[0][14:34])
         ip_proto = ip_header[6]
@@ -79,8 +80,8 @@ while True: # Loop indefinitely and capture packets
         
         #set lists to print and/or log
         log_list = ["Src IP:\t\t"+src_ip, "Dst IP:\t\t"+dst_ip] # legacy ipv4_log_def
-        if debug >= 1:
-            log_list += [] # legacy ipv4_log_main
+        '''if debug >= 1:
+            log_list += [] # legacy ipv4_log_main'''
         if debug >= 2:
             log_list += ["IP Protocol:\t"+str(ip_proto)] # ip protocol 6 is tcp, 17 is udp, legacy ipv4_log_debug
         if debug >= 3:
@@ -94,8 +95,6 @@ while True: # Loop indefinitely and capture packets
             for i in log_list:
                 print(i)
         
-        tcp_data = b''
-        udp_data = b''
         
         if ip_header[6] == 6: # TCP packet
             tcp_header = struct.unpack("!HHIIBBHHH", packet[0][34:54])
@@ -118,19 +117,20 @@ while True: # Loop indefinitely and capture packets
             if print_verbose:
                 for i in log_list:
                     print(i)
-            
+        
+        
         elif ip_header[6] == 17: # UDP packet
             udp_header = struct.unpack("!HHHH", packet[0][34:42])
             udp_data = packet[0][42:]
             
             #set lists to print and/or log
-            log_list = [] # User Datagram Protocol does not provide IP addresses, legacy udp_log_def
+            log_list = [] # UDP does not provide IP addresses, legacy udp_log_def
             if debug >= 1:
                 log_list += ["Src Port:\t"+str(udp_header[0]), "Dst Port:\t" + str(udp_header[1]), "UDP Payload:\t" + str(udp_data)] # legacy udp_log_main
             if debug >= 2:
                 log_list += ["UDP PACKET", "UDP Hash:\t" + str(udp_header[3]), "UDP Length:\t" + str(udp_header[2])] # legacy udp_log_debug
             if debug >= 3:
-                log_list += ["UDP Packet:\t"+str(packet[0][42:])] # legacy udp_log_dev
+                log_list += ["UDP Packet:\t"+str(packet[0][34:])] # legacy udp_log_dev
             
             #print/log udp log lists
             if logging:
@@ -140,5 +140,10 @@ while True: # Loop indefinitely and capture packets
                 for i in log_list:
                     print(i)
     
+    
     elif eth_proto == 34525: #ipv6 packet
         pass
+    
+    else:
+        if debug >= 3:
+            open("genesis_eth_proto.log",  "a").write(str(eth_proto)+"\n")
