@@ -1,6 +1,8 @@
 # TODO:
 # add ARP parsing (if eth_proto == 2054)
 # add system launch options (eg main.py -d 3 -l 0 -p 1)
+# add IPv6 Hop-by-Hop Option (if ip_proto == 0)
+# add ICMP for IPv6 (if ip_proto == 58)
 
 import socket
 import struct
@@ -54,7 +56,12 @@ def parse_ip_data(ip_data, ip_proto, logging, print_verbose):
         if print_verbose:
             for i in log_list:
                 print(i)
-
+    elif ip_proto == 0: # HOPOPT
+        pass
+    
+    elif ip_proto == 58: # IPv6-ICMP
+        pass
+    
     else:
         open("genesis_ip_proto.log",  "a").write(str(ip_proto)+"\n")
 
