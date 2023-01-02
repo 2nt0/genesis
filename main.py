@@ -83,7 +83,8 @@ raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30) # Set the sock
 if debug:
     print("Socket in promiscuous mode created")
 
-while True: # Loop indefinitely and capture packets
+x=0
+while x=0: # Loop indefinitely and capture packets
     packet = raw_socket.recvfrom(65535) # Receive a packet
     
     eth_header = struct.unpack("!6s6sH", packet[0][:14]) # format the packet header into a tuple
@@ -123,7 +124,9 @@ while True: # Loop indefinitely and capture packets
     
     
     if eth_proto == 2048: #ipv4 packet
-        ihl = int.from_bytes(eth_data[0], "big") - 64 # ipv4 header length in number of quad-octets
+        print(eth_data[0])
+        ihl=5
+        #ihl = int.from_bytes(eth_data[0], "big") - 64 # ipv4 header length in number of quad-octets
         ip_header = struct.unpack('!BBHHHBBH4s4s'+str(ihl-5)+"s", eth_data[:4*ihl])
         ip_data = eth_data[4*ihl:]
         ip_proto = ip_header[6]
@@ -186,3 +189,4 @@ while True: # Loop indefinitely and capture packets
     else:
         if debug >= 3:
             open("genesis_eth_proto.log",  "a").write(str(lop)+"\n")
+    x=1
