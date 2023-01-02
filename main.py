@@ -124,9 +124,7 @@ while x==0: # Loop indefinitely and capture packets
     
     
     if eth_proto == 2048: #ipv4 packet
-        print(eth_data)
-        ihl=5
-        #ihl = int.from_bytes(eth_data[0], "big") - 64 # ipv4 header length in number of quad-octets
+        ihl = eth_data[0] - 64 # ipv4 header length in number of quad-octets
         ip_header = struct.unpack('!BBHHHBBH4s4s'+str(ihl-5)+"s", eth_data[:4*ihl])
         ip_data = eth_data[4*ihl:]
         ip_proto = ip_header[6]
