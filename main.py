@@ -83,8 +83,7 @@ raw_socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2**30) # Set the sock
 if debug:
     print("Socket in promiscuous mode created")
 
-x=0
-while x==0: # Loop indefinitely and capture packets
+while True: # Loop indefinitely and capture packets
     packet = raw_socket.recvfrom(65535) # Receive a packet
     
     eth_header = struct.unpack("!6s6sH", packet[0][:14]) # format the packet header into a tuple
@@ -187,4 +186,3 @@ while x==0: # Loop indefinitely and capture packets
     else:
         if debug >= 3:
             open("genesis_eth_proto.log",  "a").write(str(lop)+"\n")
-    x=1
