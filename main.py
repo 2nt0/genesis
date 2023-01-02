@@ -1,5 +1,4 @@
 # TODO:
-# add options to ipv4 packet (if ip_header[0] > 69, options is first {ip_header[0]-69}*4s of next part)
 # add ARP parsing (if eth_proto == 2054)
 
 import socket
@@ -8,8 +7,8 @@ import struct
 def rftc(string): #define <remove first two chars> function
     return string[2:]
 
-def pad_mac(mystr): # define <pad mac address to 2 hex chars per section> function
-    return mystr.rjust(2, "0")
+def pad_mac(string): # define <pad mac address to 2 hex chars per section> function
+    return string.rjust(2, "0")
 
 def parse_ip_data(ip_data, ip_proto, logging, print_verbose):
     if ip_proto == 6: # TCP packet
@@ -86,7 +85,7 @@ if debug:
 while True: # Loop indefinitely and capture packets
     packet = raw_socket.recvfrom(65535) # Receive a packet
     
-    eth_header = struct.unpack("!6s6sH", packet[:14]) # format the packet header into a tuple
+    eth_header = struct.unpack("!6s6sH", packet[0][:14]) # format the packet header into a tuple
     eth_data = packet[0][14:]
     
     #extract, format and print source and header macs
