@@ -2,7 +2,8 @@
 # add ARP parsing (if eth_proto == 2054)
 # add system launch options (eg main.py -d 3 -l 0 -p 1)
 # add IPv6 Hop-by-Hop Option (if ip_proto == 0)
-# add ICMP for IPv6 (if ip_proto == 58)
+# add ICMPv6 (if ip_proto == 58)
+# add IGMP (if ip_proto == 2)
 # fix ipv6 formatting
 
 import socket
@@ -61,6 +62,9 @@ def parse_ip_data(ip_data, ip_proto, logging, print_verbose):
         pass
     
     elif ip_proto == 58: # IPv6-ICMP
+        pass
+    
+    elif ip_proto == 2: # IGMP
         pass
     
     else:
