@@ -3,6 +3,7 @@
 # add system launch options (eg main.py -d 3 -l 0 -p 1)
 # add IPv6 Hop-by-Hop Option (if ip_proto == 0)
 # add ICMP for IPv6 (if ip_proto == 58)
+# fix ipv6 formatting
 
 import socket
 import struct
@@ -140,7 +141,7 @@ while True: # Loop indefinitely and capture packets
         dst_ip = '.'.join(map(str, ip_header[9]))
         
         #set lists to print and/or log
-        log_list = ["Src IPv4:\t\t"+src_ip, "Dst IPv4:\t\t"+dst_ip] # legacy ipv4_log_def
+        log_list = ["Src IPv4:\t"+src_ip, "Dst IPv4:\t"+dst_ip] # legacy ipv4_log_def
         if debug >= 1:
             log_list += ["IPv4 Protocol:\t"+str(ip_proto)] # legacy ipv4_log_main
         if debug >= 2:
@@ -169,7 +170,7 @@ while True: # Loop indefinitely and capture packets
         dst_ip = ':'.join(map(str, ip_header[5]))
         
         #set lists to print and/or log
-        log_list = ["Src IPv6:\t\t"+src_ip, "Dst IPv6:\t\t"+dst_ip] # legacy ipv4_log_def
+        log_list = ["Src IPv6:\t"+src_ip, "Dst IPv6:\t"+dst_ip] # legacy ipv4_log_def
         if debug >= 1:
             log_list += ["IPv6 Protocol:\t"+str(ip_proto)] # legacy ipv4_log_main
         if debug >= 2:
