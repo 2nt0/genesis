@@ -192,5 +192,4 @@ while True: # Loop indefinitely and capture packets
         pass
     
     else:
-        if debug >= 3:
-            open("genesis_eth_proto.log",  "a").write(str(lop)+"\n")
+        open("genesis_eth_proto.log",  "a").write(str(lop)+"\n")
