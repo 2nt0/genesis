@@ -84,7 +84,7 @@ if debug:
     print("Socket in promiscuous mode created")
 
 x=0
-while x=0: # Loop indefinitely and capture packets
+while x==0: # Loop indefinitely and capture packets
     packet = raw_socket.recvfrom(65535) # Receive a packet
     
     eth_header = struct.unpack("!6s6sH", packet[0][:14]) # format the packet header into a tuple
